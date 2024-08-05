@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "ciso646": "cpp",
+        "cfloat": "cpp",
+        "algorithm": "cpp",
+        "vector": "cpp",
+        "iostream": "cpp",
+        "cmath": "cpp"
+    }
+}

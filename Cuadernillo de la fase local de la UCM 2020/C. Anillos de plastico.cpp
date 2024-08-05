@@ -167,9 +167,22 @@ vi lee(int n) {
 
 bool solve() {
   // Code aquí
-  if ( == 0){
+  
+  int n;
+  cin >> n;
+  if (n == 0){
     return false;
   }
+  int x, y;
+  int aristas = 0;
+  cin >> x >> y;
+  while (x != 0 || y != 0) {
+    aristas++;
+    cin >> x >> y;
+  }
+  
+
+  cout << aristas - n + 1 << endl;
   
   return true;
 }
@@ -184,5 +197,3 @@ int main() {
   }
   return 0;
 }
-
-//Eliminar comentario si el proyecto está terminado (Dinámica empezó el 21/06/2024)

@@ -165,12 +165,101 @@ vi lee(int n) {
   return (vect);
 }
 
+/*vector<bool> chosen = {false, false, false, false, false, false, false, false, false};
+vi permutation;
+int sol;*/
+
+/*void procesa(lli N, lli D){
+    lli N2 = 0, D2 = 0;
+    N2 += permutation[0];
+    for (int i = permutation.size()-1; i>0; i--){
+        D2*=10;
+        D2+=permutation[i];
+    }
+    for (int i = 1; N2*D<=D2*N; i++){
+        //cout << N2 << " " << D2 << endl;
+        if (N2*D == D2*N){
+            sol++;
+        }
+        N2*=10;
+        N2+=permutation[i];
+        D2-=permutation[i];
+        D2/=10;
+    }
+}*/
+
+/*void search(lli N, lli D, int tamano) {
+    if (permutation.size() == tamano) {
+        // process permutation
+    } else {
+        for (int i = 0; i < 9; i++) {
+            if (chosen[i]) continue;
+            chosen[i] = true;
+            permutation.push_back(i+1);
+            search(N, D, tamano);
+            chosen[i] = false;
+            permutation.pop_back();
+        }
+    }
+}*/
+
 bool solve() {
   // Code aquí
-  if ( == 0){
+  int N = 0; 
+  int D = 0;
+  cin >> N >> D;
+  if (N == 0 && D == 0){
     return false;
   }
-  
+  int k = 0;
+  //cout << N << " " << D << endl;
+  for (int b = 10000/2; b >= 1; b /= 2) {
+    //cout << (k+b) << " " << floor(log10(N*(k+b)))+1 << " " << floor(log10(D*(k+b)))+1 << endl;
+    while (k+b < 10000 &&  (floor(log10(N*(k+b)))+floor(log10(D*(k+b)))+2) < 9) k += b;
+  }
+  //cout << "minimo: " << k+1 << endl;
+  int minimo = k+1;
+  k = 0;
+  for (int b = 10000/2; b >= 1; b /= 2) {
+    //cout << (k+b) << " " << floor(log10(N*(k+b)))+1 << " " << floor(log10(D*(k+b)))+1 << endl;
+    while (k+b < 10000 &&  (floor(log10(N*(k+b)))+floor(log10(D*(k+b)))+2) <= 9) k += b;
+  }
+  //cout << "maximo: " << k << endl;
+
+  int N2, D2;
+  vector<bool> chosen;
+  int len, sol = 0;
+  for (int i = max(minimo,2); i<=k; i++){
+    N2 = N*i;
+    D2 = D*i;
+    chosen.clear();
+    chosen = {false, false, false, false, false, false, false, false, false};
+    len = 0;
+    //cout << "i: " << i << endl;
+    while (N2>0){
+        //cout << N2%10 << endl;
+        if (N2%10 == 0 || chosen[N2%10-1]){
+            break;
+        }
+        chosen[N2%10-1] = true;
+        N2/=10;
+        len++;
+    }
+    while (D2>0){
+        //cout << D2%10 << endl;
+        if (D2%10 == 0 || chosen[D2%10-1]){
+            break;
+        }
+        chosen[D2%10-1] = true;
+        D2/=10;
+        len++;
+    }
+    if (len == 9){
+        sol++;
+    }
+  }
+  cout << sol << endl;
+
   return true;
 }
 
@@ -184,5 +273,3 @@ int main() {
   }
   return 0;
 }
-
-//Eliminar comentario si el proyecto está terminado (Dinámica empezó el 21/06/2024)

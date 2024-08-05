@@ -112,7 +112,7 @@ bool sort_func(int a, int b) {
 double log_2 = log(2);
 double log2(int a) { return (log(a) / log_2); }
 
-void Imprime(vi vect) {
+void Imprime(vll vect) {
   for (int i = 0; i < vect.size(); i++) {
     cout << vect[i] << " ";
   }
@@ -165,24 +165,40 @@ vi lee(int n) {
   return (vect);
 }
 
-bool solve() {
-  // Code aquí
-  if ( == 0){
-    return false;
+bool solve(int c, int m, int n) {
+  n++;
+  vi v;
+  v = lee(n);
+  //Imprime(v);
+  int minimo = v[1]-v[0];
+  int maximo = v[1]-v[0];
+  for (int i = 2; i<v.size(); i++) {
+    if (v[i]-v[i-1] < minimo){
+      minimo = v[i]-v[i-1];
+    } else if (v[i]-v[i-1] > maximo){
+      maximo = v[i]-v[i-1];
+    }
+    //cout << m << " " << maximo << " " << minimo << endl;
+    if (abs(v[i]-v[i-1] - (v[i-1]-v[i-2])) > c || maximo-minimo > m){
+        cout << "Tropiezo" << endl;
+        cout.flush();
+        return true;
+    }
   }
+  cout << "Ok" << endl;
+  cout.flush();
   
   return true;
 }
 
 int main() {
-  ios::sync_with_stdio(false);
+  cin.sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr); 
   bool T = true;
-  while (T) {
-    T = solve();
+  int c, m, n;
+  while (cin >> c >> m >> n) {
+    T = solve(c, m, n);
   }
   return 0;
 }
-
-//Eliminar comentario si el proyecto está terminado (Dinámica empezó el 21/06/2024)

@@ -167,8 +167,16 @@ vi lee(int n) {
 
 bool solve() {
   // Code aquí
-  if ( == 0){
+  int x, y, a, b;
+  cin >> x >> y >> a >> b;
+  if (x == 0 && y == 0 && a == 0 && b == 0){
     return false;
+  }
+
+  if (x == a || y == b || abs(x-a) == abs(y-b)){
+    cout << "SI" << endl;
+  } else {
+    cout << "NO" << endl;
   }
   
   return true;
@@ -184,5 +192,3 @@ int main() {
   }
   return 0;
 }
-
-//Eliminar comentario si el proyecto está terminado (Dinámica empezó el 21/06/2024)
