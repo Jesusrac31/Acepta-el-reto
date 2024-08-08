@@ -5,7 +5,7 @@ g++ -o main.exe "CF Global R 26 9-jun-24\C2. Magnitude (Hard Version).cpp"
 Measure-Command{.\main.exe > output.out}
 
 Opción 2:
-g++ -o main.exe "Cuadernillo de la fase local de la UCM 2020\D. Evitando tropiezos.cpp"
+g++ -o main.exe "Cuadernillo del concurso fin de temporada 2020\B. Aplausos.cpp"
 Measure-Command{Get-Content input.in | .\main.exe > output.out}
 
 Opción 3:
