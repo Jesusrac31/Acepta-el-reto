@@ -7,6 +7,10 @@
         "iostream": "cpp",
         "cmath": "cpp",
         "ostream": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "ctime": "cpp",
+        "cstdlib": "cpp",
+        "iosfwd": "cpp",
+        "string": "cpp"
     }
 }

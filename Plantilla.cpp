@@ -43,6 +43,7 @@
 #include<istream>
 #include<iterator>
 #include<limits>
+#include <limits.h>
 #include<list>
 #include<locale>
 #include<map>
@@ -167,7 +168,9 @@ vi lee(int n) {
 
 bool solve() {
   // Code aquí
-  if ( == 0){
+
+  int n;
+  if (n == 0){
     return false;
   }
   

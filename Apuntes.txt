@@ -5,7 +5,7 @@ g++ -o main.exe "CF Global R 26 9-jun-24\C2. Magnitude (Hard Version).cpp"
 Measure-Command{.\main.exe > output.out}
 
 Opción 2:
-g++ -o main.exe "Cuadernillo del concurso fin de temporada 2020\B. Aplausos.cpp"
+g++ -o main.exe "Cuadernillo del concurso fin de temporada 2020\C. La abuelita Caperucita.cpp"
 Measure-Command{Get-Content input.in | .\main.exe > output.out}
 
 Opción 3:
@@ -13,5 +13,7 @@ Measure-Command{.\main.exe > output.out}
 Measure-Command{Get-Content input.in | .\main.exe > output.txt}
 
 Opción 4:
-g++ -o main.exe "CF R 955 (Div. 2, with prizes from NEAR!) 25-jun-24\D. Beauty of the mountains.cpp"
+g++ -o main.exe "Cuadernillo del concurso fin de temporada 2020\E. No queda otra, habrá que hacer cursos.cpp"
 Measure-Command{Get-Content input.in | .\main.exe > output.txt}
+g++ -o main.exe "Cuadernillo del concurso fin de temporada 2020\Abuela_sol_lenta.cpp"
+Measure-Command{Get-Content input.in | .\main.exe > output2.txt}

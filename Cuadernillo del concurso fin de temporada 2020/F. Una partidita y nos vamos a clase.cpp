@@ -86,8 +86,8 @@ typedef map<int, vector<int>> miv;
 // Funciones vector
 #define PB(a) push_back(a);
 
-bool sort_func(int a, int b) {
-  if (a < b) {
+bool sort_func(pii a, pii b) {
+  if (a.first < b.first) {
     return true;
   } else {
     return false;
@@ -112,10 +112,11 @@ bool sort_func(int a, int b) {
 double log_2 = log(2);
 double log2(int a) { return (log(a) / log_2); }
 
-void Imprime(vector<pii> vect) {
+void Imprime(vi vect) {
   for (int i = 0; i < vect.size(); i++) {
-    cout << vect[i].first << " " << vect[i].second << endl;
+    cout << vect[i] << " ";
   }
+  cout << "\n";
 }
 
 void Imprime2d(vector<vi> vect) {
@@ -154,58 +155,59 @@ bool isNumeric(string const &str) {
   return !str.empty() && it == str.end();
 }
 
-vector<pii> lee(int n) {
-  vector<pii> vect(n);
+vi lee(int n) {
+  int el;
+  vi vect;
   for (int i = 0; i < n; i++) {
-    cin >> vect[i].first >> vect[i].second;
+    cin >> el;
+    vect.PB(el);
   }
   return (vect);
 }
 
-bool solve() {
+int solve() {
   // Code aquí
-  int n;
-  cin >> n;
-  if (n == 0){
-    return false;
-  }
+  int l, n;
+  cin >> l >> n;
+  vector<pii> clases;
+  pii par;
+  string el;
+  int hora, minuto, d;
 
-  vector<pii> v;
-  v = lee(n);
-
-  // Agrupamos en personas que necesitan x personas para dejar de aplaudir
-  vi finish(n+1, 0);
-  for (int i = 0; i<n; i++){
-    finish[v[i].second]++;
-  }
-
-
-  sort(v.begin(), v.end());
-  int tiempo = 0, personas = n, personas_ant = n;
+  par.first = 8*60;
+  par.second = 8*60;
+  clases.PB(par);
 
   for (int i = 0; i<n; i++){
-    if (personas>=v[i].second){
-        tiempo=v[i].first;
-        finish[v[i].second]--;
-        personas_ant = personas;
-        personas--;
-        for(int j = personas_ant; j>personas; j--){
-            personas-=finish[j];
-        }
+    scanf("%2d:%2d %d",&hora,&minuto,&d);
+    par.first = minuto+hora*60;
+    par.second = par.first+d;
+    clases.PB(par);
+  }
+  par.first = 14*60;
+  par.second = 14*60;
+  clases.PB(par);
+
+  int sol = 0;
+
+  for (int i = 1; i<clases.size(); i++){
+    if (clases[i].first-clases[i-1].second >= l){
+        sol += clases[i].first-clases[i-1].second;
     }
   }
-  cout << tiempo << endl;
-  
-  return true;
+  cout << sol << endl;
+
+  return 0;
 }
 
 int main() {
-  ios::sync_with_stdio(false);
+  /*ios::sync_with_stdio(false);
   cin.tie(nullptr);
-  cout.tie(nullptr); 
-  bool T = true;
-  while (T) {
-    T = solve();
+  cout.tie(nullptr); */
+  int T;
+  cin >> T; // Número de casos
+  while (T--) {
+    solve();
   }
   return 0;
 }
