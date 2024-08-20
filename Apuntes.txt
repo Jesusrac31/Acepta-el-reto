@@ -13,7 +13,7 @@ Measure-Command{.\main.exe > output.out}
 Measure-Command{Get-Content input.in | .\main.exe > output.txt}
 
 Opción 4:
-g++ -o main.exe "Cuadernillo del concurso fin de temporada 2020\E. No queda otra, habrá que hacer cursos.cpp"
+g++ -o main.exe "Cuadernillo del concurso fin de temporada 2020\D. Don Matías copy.cpp"
 Measure-Command{Get-Content input.in | .\main.exe > output.txt}
 g++ -o main.exe "Cuadernillo del concurso fin de temporada 2020\Abuela_sol_lenta.cpp"
 Measure-Command{Get-Content input.in | .\main.exe > output2.txt}

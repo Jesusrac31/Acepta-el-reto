@@ -43,7 +43,6 @@
 #include<istream>
 #include<iterator>
 #include<limits>
-#include <limits.h>
 #include<list>
 #include<locale>
 #include<map>
@@ -87,8 +86,8 @@ typedef map<int, vector<int>> miv;
 // Funciones vector
 #define PB(a) push_back(a);
 
-bool sort_func(pii a, pii b) {
-  if (a.first < b.first) {
+bool sort_func(int a, int b) {
+  if (a < b) {
     return true;
   } else {
     return false;
@@ -114,122 +113,95 @@ double log_2 = log(2);
 double log2(int a) { return (log(a) / log_2); }
 
 void Imprime(vi vect) {
-    for (int i = 0; i < vect.size(); i++) {
-        cout << vect[i] << " ";
-    }
-    cout << "\n";
+  for (int i = 0; i < vect.size(); i++) {
+    cout << vect[i] << " ";
+  }
+  cout << "\n";
 }
 
 void Imprime2d(vector<vi> vect) {
-    for (int j = 0; j<vect.size(); j++){
-        for (int i = 0; i < vect[j].size(); i++) {
-            cout << vect[j][i] << " ";
-        }
-        cout << "\n";
+  for (int j = 0; j<vect.size(); j++){
+    for (int i = 0; i < vect[j].size(); i++) {
+        cout << vect[j][i] << " ";
     }
+    cout << "\n";
+  }
 }
 
 void Imprime_set(set<int> s) {
-    copy(s.begin(), s.end(), ostream_iterator<int>(cout, " "));
-    cout << endl;
+  copy(s.begin(), s.end(), ostream_iterator<int>(cout, " "));
+  cout << endl;
 }
 
 int maximo_comun_divisor(int a, int b) {
-    int temporal; // Para no perder b
-    while (b != 0) {
-      temporal = b;
-      b = a % b;
-      a = temporal;
-    }
-    return a;
+  int temporal; // Para no perder b
+  while (b != 0) {
+    temporal = b;
+    b = a % b;
+    a = temporal;
+  }
+  return a;
 }
 
 int minimo_comun_multiplo(int a, int b) {
-    return (a * b) / maximo_comun_divisor(a, b);
+  return (a * b) / maximo_comun_divisor(a, b);
 }
 
 bool isNumeric(string const &str) {
-    auto it = str.begin();
-    while (it != str.end() && isdigit(*it)) {
-      it++;
-    }
-    return !str.empty() && it == str.end();
+  auto it = str.begin();
+  while (it != str.end() && isdigit(*it)) {
+    it++;
+  }
+  return !str.empty() && it == str.end();
 }
 
 vi lee(int n) {
-    int el;
-    vi vect;
-    for (int i = 0; i < n; i++) {
-      cin >> el;
-      vect.PB(el);
-    }
-    return (vect);
+  int el;
+  vi vect;
+  for (int i = 0; i < n; i++) {
+    cin >> el;
+    vect.PB(el);
+  }
+  return (vect);
 }
 
-bool solve(int n) {
-    // Code aquí
-    vi dias(400, 0);
-    vector<pii> cursos;
+int solve(int n) {
+  // Code aquí
 
-    string el;
-    int dia, mes;
-    pii par;
-    for (int i = 0; i<n; i++){
-        cin >> el;
-        dia = stoi(el.substr(0,2));
-        mes = stoi(el.substr(3,4));
-        dias[(mes-1)*31+dia]++;
-        par.first = (mes-1)*31+dia;
-        cin >> el;
-        dia = stoi(el.substr(0,2));
-        mes = stoi(el.substr(3,4));
-        dias[(mes-1)*31+dia+1]--;
-        par.second = (mes-1)*31+dia+1;
-        cursos.PB(par);
+  vector<pair<int, string>> accidentes={}; 
+  pair<int, string> par;
+  int max = 0;
+
+  for (int i = 0; i<n; i++){
+    cin >> par.second >> par.first;
+    if (par.first >= max){
+      accidentes.clear();
+      max = par.first;
     }
-    ord(cursos);
-    par.first = 401;
-    par.second = 401;
-    cursos.PB(par);
-    //Imprime(dias);
-    int contador = 0, index = 0;
-    multiset<int> act;
-    auto it = act.begin();
-    int sol = n;
-    for (int i = 0; i<dias.size(); i++){
-        contador+=dias[i];
-        while (cursos[index].first<=i){
-            act.insert(cursos[index].second);
-            index++;
-        }
-        while (contador>4){
-            /*cout << "HEY " << i << endl;
-            for (auto j = act.begin(); j != act.end(); j++){
-                cout << (*j) << " ";
-            }
-            cout << endl;*/
-            sol--;
-            contador--;
-            it=act.end();
-            it--;
-            //cout << (*it) << endl;
-            dias[(*it)]++;
-            act.erase(it);
-        }
+    accidentes.PB(par);
+    if (accidentes.size()==1){
+      cout << "NO HAY" << endl;
     }
-    cout << sol << endl;
-  
-    return true;
+    for(int j = accidentes.size()-2; j>=0; j--){
+      if(accidentes[j].first>par.first) { 
+        cout << accidentes[j].second << '\n'; 
+        break;
+      }
+    }
+  }
+
+  cout << "---" << endl; 
+
+  return 0;
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr); 
-    bool T = true;
-    int n;
-    while (cin >> n) {
-        T = solve(n);
-    }
-    return 0;
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr); 
+  int n;
+  while (cin >> n){
+    solve(n);
+  }
+  return 0;
 }

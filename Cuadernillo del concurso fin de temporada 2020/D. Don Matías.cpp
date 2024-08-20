@@ -113,7 +113,14 @@ bool sort_func(int a, int b) {
 double log_2 = log(2);
 double log2(int a) { return (log(a) / log_2); }
 
-void Imprime(vector<pii> vect) {
+void Imprime(vector<int> vect) {
+  for (int i = 0; i < vect.size(); i++) {
+    cout << vect[i] << " ";
+  }
+  cout << "\n";
+}
+
+void ImprimePar(vector<pii> vect) {
   for (int i = 0; i < vect.size(); i++) {
     cout << "(" << vect[i].first << " " << vect[i].second << ") ";
   }
@@ -169,213 +176,141 @@ vi lee(int n) {
 bool debugging = false;
 
 int padre;
+int peso;
 bool resuelto;
 
-int recorre (int nodo_init, vector<vector<pii>>& conexiones, vector<pii>& parent, vi& bloqueados, int& turno){
-    if (debugging){
-        cout << "Nodo_init: " << nodo_init << endl;
+void dfs(int s, vector<vector<pii>>& adj, vector<bool>& visited, vector<pii>& parent, vector<int>& operacion, int turno = 1) {
+    parent[s].first = padre;
+    visited[s] = true;
+    // process node s
+    if(debugging){
+        cout << s << endl;
     }
-    bloqueados[nodo_init] = turno;
-    for (auto u: conexiones[nodo_init]){
-        if (debugging){
-            cout << "TRY " << (u.first) << endl;
-        }
-        if (bloqueados[u.first] != 0){ // Está bloqueado
+    for (auto u: adj[s]) {
+        if (visited[u.first]){ // Ciclo
             if (debugging){
-                cout << "Block " << (u.first) << endl;
+                cout << "BLOCK " << u.first << endl;
             }
-            if (turno%2 == bloqueados[u.first]%2 && !resuelto) { // Ciclo impar, tenemos el valor de todos los estudiantes del arbol
-                if (debugging){
-                    cout << "Padre " << parent[padre].second << endl;
-                }
-                parent[padre].second = (parent[nodo_init].second + parent[u.first].second);
-                if (debugging){
-                    cout << "Padre " << parent[padre].second << endl;
-                }
-                if (bloqueados[u.first]%2 == 1){
-                    parent[padre].second += u.second;
-                } else {
-                    parent[padre].second -= u.second;
-                }
-                if (debugging){
-                    cout << "Padre " << parent[padre].second << endl;
-                }
+            if (operacion[u.first] != (turno%2)*2-1 && !resuelto){ // operacion distinta, resuelve el sistema
                 resuelto = true;
+                if (debugging){
+                    cout << parent[u.first].second << " " << peso+((turno%2)*2-1)*u.second << endl;
+                }
+                parent[padre].second = parent[u.first].second+peso+((turno%2)*2-1)*u.second;
+                operacion[padre] = 1;
             }
             continue;
         }
+        operacion[u.first] = (turno%2)*2-1;
+        peso += operacion[u.first]*u.second;
+
+        parent[u.first].second = peso;
         if (debugging){
-            cout << "NOT_BLOCKED " << (u.first) << endl;
+            cout << turno << " " << u.first << " " << peso << endl;
         }
-        if (nodo_init != padre){
-            if (turno % 2 == 1){
-                parent[u.first].second = parent[nodo_init].second + u.second;
-            } else {
-                parent[u.first].second = parent[nodo_init].second - u.second;
-            }
-        } else {
-              parent[u.first].second = u.second;
-        }
-        parent[u.first].first = padre;
-        turno++;
-        recorre(u.first, conexiones, parent, bloqueados, turno);
-        turno--;
+        dfs(u.first, adj, visited, parent, operacion, turno+1);
+
+        peso -= operacion[u.first]*u.second;
     }
-    if (debugging){
-        cout << "exit" << endl;
-    }
-    return 0;
 }
 
 bool solve() {
-    // Code aquí
-    int e, n, m;
-    cin >> e >> n >> m;
-    if (e == 0 && n == 0 && m == 0){
-      return false;
-    }
+  // Code aquí
 
-    vector<vector<pii>> conexiones (e+1);
-    vector<pii> parent(e+1, {-1, -1});
-    vi bloqueados(e+1, 0);
+  int e, n, m;
+  cin >> e >> n >> m;
+  if (e == 0 && n == 0 && m == 0){
+    return false;
+  }
+  
+  vector<vector<pii>> adj (e+1, vector<pii>{});
+  vector<bool> visited (e+1, false);
+  vector<int> operacion (e+1, -1); // True es que suma y false es que resta
+  vector<pii> parent (e+1, {-1, 0});
+  pii par;
 
-    int p, x, y, w;
-    pii par;
-    for (int i = 0; i<n; i++){
-        cin >> p;
-        if (p == 1){
-            cin >> x >> w;
-            y = x;
-            w*=2;
-        } else {
-            cin >> x >> y >> w;
-        }
+  int p, x, y, w;
+  for (int i = 0; i<n; i++){
+    cin >> p;
+    if (p == 1){
+        cin >> x >> w;
         par.first = x;
-        par.second = w;
-        conexiones[y].PB(par);
+        par.second = 2*w;
+        adj[x].PB(par);
+    } else {
+        cin >> x >> y >> w;
         par.first = y;
-        conexiones[x].PB(par);
+        par.second = w;
+        adj[x].PB(par);
+        par.first = x;
+        adj[y].PB(par);
     }
-    if (debugging){
-        Imprime2d(conexiones);
+  }
+  for (int i = 1; i<visited.size(); i++){
+    if (!visited[i]){
+        padre = i;
+        peso = 0;
+        resuelto = false;
+        dfs(i ,adj, visited, parent, operacion);
+    }
+  }
+
+  if (debugging){
+    Imprime2d(adj);
+    ImprimePar(parent);
+    for (int i = 0; i<operacion.size(); i++){
+        cout << operacion[i] << " ";
+    }
+    cout << endl;
+  }
+
+  for (int i = 0; i<m; i++){
+    cin >> p;
+    if (p == 1){
+        cin >> x;
+        y = x;
+    } else {
+        cin >> x >> y;
     }
 
-    for (int i = 1; i<=e; i++){
-        if (bloqueados[i] == 0){
-            if (debugging){
-                cout << "NEW " << i << endl;
-            }
+    // Debemos resolver el sistema, todos los numeros en el vector parent se disponen de la siguiente forma:
+    // {nodo con el que opera, resultado de operacion}
+    // La operación la rige el vector operacion
 
-            padre = i;
-            parent[i].first = i;
-            parent[i].second = 0;
-            resuelto = false;
-            int turno = 1;
-            recorre(i, conexiones, parent, bloqueados, turno);
-            if (!resuelto){
-                parent[i].second = -1;
-            }
-        }
+    /* 
+    Situaciones en las que SÍ hay respuesta posible:
+
+    - Tienen el mismo padre y hacen operaciones contrarias con respecto a dicho padre, necesita dos alumnos
+    x+y=n; x-z=m; --> x+y-(x-z) = n-m --> y+z=n-m
+    - Se conoce el valor de su padre, respuesta valida para un solo alumno o para dos
+    x+x=n; x+y=m; --> 2x+2y=2m --> n+2y=2m --> y=(2m-n)/2 
+    x+x=n; x-y=m; --> 2x-2y=2m --> n-2y=2m --> y=-(2m-n)/2
+    - Tienen padres distintos o iguales pero dichos padres son conocidos, necesitas dos nodos y aplicas la lógica anterior
+    */
+
+
+    if (p == 1 && operacion[parent[x].first] == 1){
+        cout << operacion[x]*(2*parent[x].second-parent[parent[x].first].second)/2 << endl;
+    } else if (p == 2 && operacion[parent[x].first] == 1 && operacion[parent[y].first] == 1){
+        cout << operacion[x]*(2*parent[x].second-parent[parent[x].first].second)/2 + operacion[y]*(2*parent[y].second-parent[parent[y].first].second)/2 << endl;
+    } else if (p == 2 && parent[x].first == parent[y].first && operacion[x] != operacion[y]){
+        cout << (parent[x].second-parent[y].second)*operacion[x] << endl;
+    } else {
+        cout << "CUIDADO" << endl;
     }
-    if (debugging){
-        Imprime(parent);
-        cout << endl;
-        Imprime2d(conexiones);
-        cout << endl;
-    }
-    while (m--){
-        cin >> p;
-        if (p == 1){
-            cin >> x;
-            y = x;
-        } else {
-            cin >> x >> y;
-        }
-        //Los casos se dividen en dos: Pertenecen al mismo arbol (tienen mismo padre) o no
-        int sol = -1;
-        if (parent[x].first == parent[y].first){ // Mismo arbol
-            // En caso de estar en el mismo arbol debemos ver si pueden enlazarse o no
-            // Si sabemos el valor exacto del padre no tendremos ningún problema
-            
-            if (parent[parent[x].first].second != -1){
-                // A partir del padre sumamos ambos resultados
-                // p+x = k --> x = k-p
-                if (bloqueados[x]%2 == 1){
-                    sol = abs(parent[parent[x].first].second/2-parent[x].second);
-                } else {
-                    sol = parent[x].second-parent[parent[x].first].second/2;
-                }
-                if (bloqueados[y]%2 == 1){
-                    sol += abs(parent[parent[y].first].second/2-parent[y].second);
-                } else {
-                    sol += parent[y].second-parent[parent[y].first].second/2;
-                }
-            } else {
-                //Si no tenemos el valor de sus padres va a ser más difiil, necesitamos que los numeros almacenados en bloqueados mod 2 sean distintos.
-                if (bloqueados[x]%2 != bloqueados[y]%2){
-                    // Si son distintos sabemos el resultado de la siguiente forma:
-                    // p+x - (p-y) = x+y; Siendo p la incognita del padre, x la del primer alumno e y la del segundo
-                    if (parent[x].second != -1){
-                        if (bloqueados[x]%2 == 1){
-                            sol = (-1)*parent[x].second;
-                        } else {
-                            sol = parent[x].second;
-                        }
-                    } else {
-                        sol = 0;
-                    }
-                    if (parent[y].second != -1){
-                        if (bloqueados[y]%2 == 1){
-                            sol += (-1)*parent[y].second;
-                        } else {
-                            sol += parent[y].second;
-                        }
-                    }
-                } else {
-                    // En caso de que sean iguales nos será imposible predecir el resultado
-                    cout << "CUIDADO" << endl;
-                }
-            }
-        } else { // Diferente arbol
-            // Esta opción solo hay una forma de obtener el resultado, debemos tener el valor de los nodos padres de ambos casos
-            if (parent[parent[x].first].second != -1 && parent[parent[y].first].second != -1){
-                // La forma de saber el resultado en esta situación es obteniendo el valor del nodo a partir de la relación entre ellos
-                // p+x = k --> x = k-p
-                if (bloqueados[x]%2 == 1){
-                    sol = abs(parent[parent[x].first].second/2-parent[x].second);
-                } else {
-                    sol = parent[x].second-parent[parent[x].first].second/2;
-                }
-                if (bloqueados[y]%2 == 1){
-                    sol += abs(parent[parent[y].first].second/2-parent[y].second);
-                } else {
-                    sol += parent[y].second-parent[parent[y].first].second/2;
-                }
-            } else {
-                cout << "CUIDADO" << endl;
-            }
-        }
-        if (sol != -1){
-            if (p == 1){
-                sol /= 2;
-            }
-            cout << sol << endl;
-        }
-    }
-    
-    cout << "---" << endl;
-    return true;
+  }
+
+  cout << "---" << endl;
+  return true;
 }
 
 int main() {
-  /*ios::sync_with_stdio(false);
+  ios::sync_with_stdio(false);
   cin.tie(nullptr);
-  cout.tie(nullptr); */
+  cout.tie(nullptr);
   bool T = true;
   while (T) {
     T = solve();
   }
   return 0;
 }
-
-//Eliminar comentario si el proyecto está terminado (Dinámica empezó el 21/06/2024)
